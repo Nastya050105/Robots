@@ -27,6 +27,7 @@ public class GameVisualizer extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
+        model.updateModel(getWidth(), getHeight()); // Pass window dimensions
         drawRobot(g2d, model.getRobotPositionX(), model.getRobotPositionY(), model.getRobotDirection());
         drawTarget(g2d, model.getTargetPositionX(), model.getTargetPositionY());
     }

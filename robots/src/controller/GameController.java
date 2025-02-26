@@ -3,7 +3,6 @@ package controller;
 import model.RobotModel;
 import view.GameVisualizer;
 
-import javax.swing.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,7 +19,8 @@ public class GameController {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                model.updateModel();
+                // Pass the window dimensions to the updateModel method
+                model.updateModel(view.getWidth(), view.getHeight());
                 view.repaint();
             }
         }, 0, 10);

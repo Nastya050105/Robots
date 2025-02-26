@@ -36,7 +36,7 @@ public class RobotModel {
         targetPositionY = y;
     }
 
-    public void updateModel() {
+    public void updateModel(int windowWidth, int windowHeight) {
         double distance = distance(targetPositionX, targetPositionY, robotPositionX, robotPositionY);
         if (distance < 0.5) {
             return;
@@ -51,10 +51,10 @@ public class RobotModel {
             angularVelocity = -maxAngularVelocity;
         }
 
-        moveRobot(velocity, angularVelocity, 10);
+        moveRobot(velocity, angularVelocity, 10, windowWidth, windowHeight);
     }
 
-    private void moveRobot(double velocity, double angularVelocity, double duration) {
+    private void moveRobot(double velocity, double angularVelocity, double duration, int windowWidth, int windowHeight) {
         velocity = applyLimits(velocity, 0, maxVelocity);
         angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
         double newX = robotPositionX + velocity / angularVelocity *
@@ -69,6 +69,11 @@ public class RobotModel {
         if (!Double.isFinite(newY)) {
             newY = robotPositionY + velocity * duration * Math.sin(robotDirection);
         }
+
+        // Ensure the robot stays within the window bounds
+        newX = Math.max(0, Math.min(windowWidth, newX));
+        newY = Math.max(0, Math.min(windowHeight, newY));
+
         robotPositionX = newX;
         robotPositionY = newY;
         double newDirection = asNormalizedRadians(robotDirection + angularVelocity * duration);
