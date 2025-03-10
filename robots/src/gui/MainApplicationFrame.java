@@ -8,6 +8,7 @@ import java.beans.PropertyVetoException;
 import java.io.*;
 import java.util.Properties;
 
+import controller.GameController;
 import log.Logger;
 import model.RobotModel;
 import view.GameVisualizer;
@@ -54,6 +55,7 @@ public class MainApplicationFrame extends JFrame {
         RobotModel model = new RobotModel();
         GameVisualizer visualizer = new GameVisualizer(model);
         GameWindow gameWindow = new GameWindow(visualizer);
+        GameController controller = new GameController(model, visualizer);
         gameWindow.setSize(400, 400);
         return gameWindow;
     }
