@@ -8,6 +8,7 @@ import view.GameVisualizer;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyVetoException;
 import java.io.*;
 import java.util.Properties;
@@ -56,7 +57,6 @@ public class MainApplicationFrame extends JFrame {
     protected GameWindow createGameWindow() {
         RobotModel model = new RobotModel();
         GameVisualizer visualizer = new GameVisualizer(model);
-        GameController controller = new GameController(model, visualizer);
 
         GameWindow gameWindow = new GameWindow(visualizer);
         gameWindow.setSize(400, 400);
@@ -91,7 +91,7 @@ public class MainApplicationFrame extends JFrame {
 
     private JMenuItem createLookAndFeelMenuItem(String label, String className) {
         JMenuItem item = new JMenuItem(label, KeyEvent.VK_S);
-        item.addActionListener((event) -> {
+        item.addActionListener((_) -> {
             setLookAndFeel(className);
             this.invalidate();
         });
@@ -104,7 +104,7 @@ public class MainApplicationFrame extends JFrame {
         testMenu.getAccessibleContext().setAccessibleDescription("Тестовые команды");
 
         JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-        addLogMessageItem.addActionListener((event) -> Logger.debug("Новая строка"));
+        addLogMessageItem.addActionListener((_) -> Logger.debug("Новая строка"));
         testMenu.add(addLogMessageItem);
 
         return testMenu;
@@ -115,7 +115,7 @@ public class MainApplicationFrame extends JFrame {
         exitMenu.setMnemonic(KeyEvent.VK_X);
 
         JMenuItem exitMenuItem = new JMenuItem("Выйти", KeyEvent.VK_X);
-        exitMenuItem.addActionListener((event) -> exitApplication());
+        exitMenuItem.addActionListener((_) -> dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
         exitMenu.add(exitMenuItem);
 
         return exitMenu;
