@@ -1,10 +1,5 @@
 package gui;
 
-import controller.GameController;
-import log.Logger;
-import model.RobotModel;
-import view.GameVisualizer;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -12,6 +7,10 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyVetoException;
 import java.io.*;
 import java.util.Properties;
+
+import log.Logger;
+import model.RobotModel;
+import view.GameVisualizer;
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
@@ -21,22 +20,19 @@ public class MainApplicationFrame extends JFrame {
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset, screenSize.width - inset * 2, screenSize.height - inset * 2);
-
         setContentPane(desktopPane);
 
-        // Create and add the log window
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-        // Create and add the game window
         GameWindow gameWindow = createGameWindow();
         addWindow(gameWindow);
 
-        setJMenuBar(generateMenuBar());
+        setJMenuBar(MenuFactory.createMenuBar(this));
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+            public void windowClosing(WindowEvent windowEvent) {
                 exitApplication();
             }
         });
@@ -57,7 +53,6 @@ public class MainApplicationFrame extends JFrame {
     protected GameWindow createGameWindow() {
         RobotModel model = new RobotModel();
         GameVisualizer visualizer = new GameVisualizer(model);
-
         GameWindow gameWindow = new GameWindow(visualizer);
         gameWindow.setSize(400, 400);
         return gameWindow;
@@ -68,65 +63,13 @@ public class MainApplicationFrame extends JFrame {
         frame.setVisible(true);
     }
 
-    private JMenuBar generateMenuBar() {
-        JMenuBar menuBar = new JMenuBar();
-
-        menuBar.add(createLookAndFeelMenu());
-        menuBar.add(createTestMenu());
-        menuBar.add(createExitMenu());
-
-        return menuBar;
-    }
-
-    private JMenu createLookAndFeelMenu() {
-        JMenu lookAndFeelMenu = new JMenu("Режим отображения");
-        lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        lookAndFeelMenu.getAccessibleContext().setAccessibleDescription("Управление режимом отображения приложения");
-
-        lookAndFeelMenu.add(createLookAndFeelMenuItem("Системная схема", UIManager.getSystemLookAndFeelClassName()));
-        lookAndFeelMenu.add(createLookAndFeelMenuItem("Универсальная схема", UIManager.getCrossPlatformLookAndFeelClassName()));
-
-        return lookAndFeelMenu;
-    }
-
-    private JMenuItem createLookAndFeelMenuItem(String label, String className) {
-        JMenuItem item = new JMenuItem(label, KeyEvent.VK_S);
-        item.addActionListener((_) -> {
-            setLookAndFeel(className);
-            this.invalidate();
-        });
-        return item;
-    }
-
-    private JMenu createTestMenu() {
-        JMenu testMenu = new JMenu("Тесты");
-        testMenu.setMnemonic(KeyEvent.VK_T);
-        testMenu.getAccessibleContext().setAccessibleDescription("Тестовые команды");
-
-        JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-        addLogMessageItem.addActionListener((_) -> Logger.debug("Новая строка"));
-        testMenu.add(addLogMessageItem);
-
-        return testMenu;
-    }
-
-    private JMenu createExitMenu() {
-        JMenu exitMenu = new JMenu("Выход");
-        exitMenu.setMnemonic(KeyEvent.VK_X);
-
-        JMenuItem exitMenuItem = new JMenuItem("Выйти", KeyEvent.VK_X);
-        exitMenuItem.addActionListener((_) -> dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
-        exitMenu.add(exitMenuItem);
-
-        return exitMenu;
-    }
-
-    private void setLookAndFeel(String className) {
+    public void setLookAndFeel(String className) {
         try {
             UIManager.setLookAndFeel(className);
             SwingUtilities.updateComponentTreeUI(this);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            // just ignore
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+                 UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
         }
     }
 
@@ -191,7 +134,7 @@ public class MainApplicationFrame extends JFrame {
                 }
             }
         } catch (IOException e) {
-            // If the file doesn't exist, just ignore and use default positions
+
         }
     }
 }
