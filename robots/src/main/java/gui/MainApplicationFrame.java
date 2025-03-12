@@ -11,14 +11,12 @@ import log.Logger;
 
 /**
  * Что требуется сделать:
- * 1. Метод создания меню перегружен функционалом и трудно читается. 
+ * 1. Метод создания меню перегружен функционалом и трудно читается.
  * Следует разделить его на серию более простых методов (или вообще выделить отдельный класс).
- *
  */
-public class MainApplicationFrame extends JFrame
-{
+public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
-    
+
     public MainApplicationFrame() {
 
         Locale.setDefault(new Locale("ru", "RU"));
@@ -27,8 +25,8 @@ public class MainApplicationFrame extends JFrame
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset,
-            screenSize.width  - inset*2,
-            screenSize.height - inset*2);
+                screenSize.width - inset * 2,
+                screenSize.height - inset * 2);
 
         setContentPane(desktopPane);
 
@@ -38,26 +36,24 @@ public class MainApplicationFrame extends JFrame
 
         // Создание и добавление окна моделирования движения робота
         GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(400,  400);
+        gameWindow.setSize(400, 400);
         addWindow(gameWindow);
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
-    
-    protected LogWindow createLogWindow()
-    {
+
+    protected LogWindow createLogWindow() {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-        logWindow.setLocation(1328,0);
+        logWindow.setLocation(1328, 0);
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
         Logger.debug("Протокол работает");
         return logWindow;
     }
-    
-    protected void addWindow(JInternalFrame frame)
-    {
+
+    protected void addWindow(JInternalFrame frame) {
         desktopPane.add(frame);
         frame.setVisible(true);
     }
@@ -65,51 +61,21 @@ public class MainApplicationFrame extends JFrame
     private void checkExit() {
         Object[] options = {"Выйти", "Остаться"};
         int choice = JOptionPane.showOptionDialog(
-                this, // Родительское окно
-                "Подтвердите выход из приложения", // Сообщение
-                "Подтверждение выхода", // Название всплывающего окна
-                JOptionPane.YES_NO_OPTION, // Тип опций
-                JOptionPane.QUESTION_MESSAGE, // Тип сообщения
+                this,
+                "Подтвердите выход из приложения",
+                "Подтверждение выхода",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
                 null,
-                options, // Текст на кнопках
-                options[1] // Выбор по умолчанию
+                options,
+                options[1]
         );
         if (choice == JOptionPane.YES_OPTION) {
             System.exit(0);
         }
     }
-    
-//    protected JMenuBar createMenuBar() {
-//        JMenuBar menuBar = new JMenuBar();
-//
-//        //Set up the lone menu.
-//        JMenu menu = new JMenu("Document");
-//        menu.setMnemonic(KeyEvent.VK_D);
-//        menuBar.add(menu);
-//
-//        //Set up the first menu item.
-//        JMenuItem menuItem = new JMenuItem("New");
-//        menuItem.setMnemonic(KeyEvent.VK_N);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_N, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("new");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-//
-//        //Set up the second menu item.
-//        menuItem = new JMenuItem("Quit");
-//        menuItem.setMnemonic(KeyEvent.VK_Q);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_Q, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("quit");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-//
-//        return menuBar;
-//    }
-    
-    private JMenuBar generateMenuBar()
-    {
+
+    private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
         // Верхняя плашка "Режим отображения"
@@ -172,17 +138,13 @@ public class MainApplicationFrame extends JFrame
         menuBar.add(exitMenu);
         return menuBar;
     }
-    
-    private void setLookAndFeel(String className)
-    {
-        try
-        {
+
+    private void setLookAndFeel(String className) {
+        try {
             UIManager.setLookAndFeel(className);
             SwingUtilities.updateComponentTreeUI(this);
-        }
-        catch (ClassNotFoundException | InstantiationException
-            | IllegalAccessException | UnsupportedLookAndFeelException e)
-        {
+        } catch (ClassNotFoundException | InstantiationException
+                 | IllegalAccessException | UnsupportedLookAndFeelException e) {
             // just ignore
         }
     }
