@@ -11,7 +11,7 @@ import robots.log.LogChangeListener;
 import robots.log.LogEntry;
 import robots.log.LogWindowSource;
 
-public class LogWindow extends JInternalFrame implements LogChangeListener
+public class LogWindow extends AbstractWindow implements LogChangeListener
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
@@ -43,9 +43,8 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
     }
 
     @Override
-    public void doDefaultCloseAction() {
+    protected void closeWindow() {
         m_logSource.unregisterListener(this);
-        super.doDefaultCloseAction();
     }
 
     @Override
