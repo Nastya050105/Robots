@@ -1,6 +1,5 @@
-package log;
+package src.log;
 
-public interface LogChangeListener
-{
-    public void onLogChanged(); 
+public interface LogChangeListener {
+    void onLogChanged();
 }
