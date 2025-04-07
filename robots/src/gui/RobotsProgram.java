@@ -1,5 +1,7 @@
 package gui;
 
+import robots.src.gui.MainApplicationFrame;
+
 import java.awt.Frame;
 
 import javax.swing.SwingUtilities;

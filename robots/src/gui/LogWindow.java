@@ -1,5 +1,6 @@
 package gui;
 
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.TextArea;
@@ -31,13 +32,12 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
         updateLogContent();
     }
 
+    public LogWindow() {
+    }
+
     private void updateLogContent()
     {
         StringBuilder content = new StringBuilder();
-        for (LogEntry entry : m_logSource.all())
-        {
-            content.append(entry.getMessage()).append("\n");
-        }
         m_logContent.setText(content.toString());
         m_logContent.invalidate();
     }
