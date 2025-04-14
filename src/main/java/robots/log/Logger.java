@@ -1,10 +1,10 @@
-package log;
+package robots.log;
 
 public final class Logger
 {
     private static final LogWindowSource defaultLogSource;
     static {
-        defaultLogSource = new LogWindowSource(100);
+        defaultLogSource = new LogWindowSource(3);
     }
     
     private Logger()
