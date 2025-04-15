@@ -1,15 +1,21 @@
 package gui;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.*;
+
+import log.Logger;
+
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
-    private WindowGeometry windowGeometry;
+    private final WindowManager windowManager;
 
     public MainApplicationFrame() {
+        //Make the big window be indented 50 pixels from each edge
+        //of the screen.
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset,
@@ -18,41 +24,86 @@ public class MainApplicationFrame extends JFrame {
 
         setContentPane(desktopPane);
 
-        windowGeometry = new WindowGeometry();
+        windowManager = new WindowManager();
 
-        LogWindow logWindow = WindowCreator.createLogWindow();
+        LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-        GameWindow gameWindow = WindowCreator.createGameWindow();
+        GameWindow gameWindow = createGameWindow();
         addWindow(gameWindow);
 
-        setJMenuBar(MenuBarCreator.createMenuBar(this));
+        setJMenuBar(generateMenuBar());
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-
-                windowGeometry.saveState(gameWindow);
-                windowGeometry.saveState(logWindow);
-                ExitHandler.confirmExit(MainApplicationFrame.this);
+                confirmExit();
             }
         });
+    }
+
+    public void applyLookAndFeel(String className) {
+        setLookAndFeel(className);
+        this.invalidate(); // Обновляем интерфейс после изменения темы
+    }
+
+    protected LogWindow createLogWindow() {
+        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
+        windowManager.loadWindowState(logWindow);
+        Logger.debug("LogWindow работает");
+        return logWindow;
+    }
+
+    protected GameWindow createGameWindow() {
+        GameWindow gameWindow = new GameWindow();
+        windowManager.loadWindowState(gameWindow);
+        Logger.debug("GameWindow работает");
+        return gameWindow;
     }
 
     protected void addWindow(JInternalFrame frame) {
         desktopPane.add(frame);
         frame.setVisible(true);
-
-        windowGeometry.restoreState(frame);
     }
 
-    public void setLookAndFeel(String className) {
-        LookAndFeelHandler.setLookAndFeel(className);
+    protected JMenuBar generateMenuBar() {
+        return MenuBarBuilder.createMenuBar(this);
+    }
+
+    void setLookAndFeel(String className) {
+        try {
+            UIManager.setLookAndFeel(className);
+            SwingUtilities.updateComponentTreeUI(this);
+        } catch (ClassNotFoundException | InstantiationException
+                 | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            // just ignore
+        }
     }
 
     public void confirmExit() {
-        ExitHandler.confirmExit(this);
+        String message = "Вы действительно хотите выйти?";
+        String title = "Подтверждение выхода";
+        Object[] options = {"Да", "Нет"};
+
+        int result = JOptionPane.showOptionDialog(
+                this,
+                message,
+                title,
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null, // Иконка
+                options,
+                options[1] // Выбранный по умолчанию вариант
+        );
+        if (result == JOptionPane.YES_OPTION) {
+            for (JInternalFrame frame : desktopPane.getAllFrames()) {
+                if (frame instanceof Savable) {
+                    windowManager.saveWindowState((MyWindow) frame);
+                }
+            }
+            windowManager.saveToDisk();
+            System.exit(0);
+        }
     }
 }
-

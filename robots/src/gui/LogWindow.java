@@ -1,30 +1,34 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.TextArea;
-
-import javax.swing.JInternalFrame;
+import java.awt.*;
 import javax.swing.JPanel;
-
 import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
+import javax.swing.JTextArea;
+import java.awt.BorderLayout;
 
-public class LogWindow extends JInternalFrame implements LogChangeListener {
-    private LogWindowSource m_logSource;
-    private TextArea m_logContent;
+
+public class LogWindow extends MyWindow implements LogChangeListener {
+    private final LogWindowSource m_logSource;
+    private final JTextArea m_logContent;
 
     public LogWindow(LogWindowSource logSource) {
-        super("Протокол работы", true, true, true, true);
+        super("Протокол работы", "logWindow");
         m_logSource = logSource;
         m_logSource.registerListener(this);
-        m_logContent = new TextArea("");
-        m_logContent.setSize(200, 500);
+        m_logContent = new JTextArea();
+        m_logContent.setEditable(false);
 
+        minHeight = 500;
+        minWidth = 200;
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(m_logContent, BorderLayout.CENTER);
         getContentPane().add(panel);
+        setLocation(10, 10);
+        setSize(200, 500);
+        setMinimumSize(getSize());
+
         pack();
         updateLogContent();
     }

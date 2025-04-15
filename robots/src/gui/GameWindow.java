@@ -1,19 +1,22 @@
 package gui;
 
-import java.awt.BorderLayout;
-
-import javax.swing.JInternalFrame;
+import java.awt.*;
 import javax.swing.JPanel;
 
-public class GameWindow extends JInternalFrame {
+public class GameWindow extends MyWindow {
     private final GameVisualizer m_visualizer;
 
     public GameWindow() {
-        super("Игровое поле", true, true, true, true);
+        super("Игровое поле", "gameWindow");
+        minHeight = 400;
+        minWidth = 400;
         m_visualizer = new GameVisualizer();
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(m_visualizer, BorderLayout.CENTER);
         getContentPane().add(panel);
+        setLocation(10, 10);
+        setSize(400, 400);
+        setMinimumSize(getSize());
         pack();
     }
 }
