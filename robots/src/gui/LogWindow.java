@@ -9,7 +9,7 @@ import javax.swing.JTextArea;
 import java.awt.BorderLayout;
 
 
-public class LogWindow extends MyWindow implements LogChangeListener {
+public class LogWindow extends Window implements LogChangeListener {
     private final LogWindowSource m_logSource;
     private final JTextArea m_logContent;
 

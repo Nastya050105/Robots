@@ -3,7 +3,7 @@ package gui;
 import java.awt.*;
 import javax.swing.JPanel;
 
-public class GameWindow extends MyWindow {
+public class GameWindow extends Window {
     private final GameVisualizer m_visualizer;
 
     public GameWindow() {

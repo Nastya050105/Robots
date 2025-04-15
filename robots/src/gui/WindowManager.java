@@ -33,13 +33,13 @@ public class WindowManager {
         }
     }
 
-    public void loadWindowState(MyWindow window) {
+    public void loadWindowState(Window window) {
         if (window != null) {
             window.loadState(stateMap);
         }
     }
 
-    public void saveWindowState(MyWindow window) {
+    public void saveWindowState(Window window) {
         if (window != null) {
             stateMap.putAll(window.saveState());
         }

@@ -5,11 +5,11 @@ import java.awt.*;
 import java.beans.PropertyVetoException;
 import java.util.HashMap;
 
-public abstract class MyWindow extends JInternalFrame implements Savable {
+public abstract class Window extends JInternalFrame implements ISaveble {
     private final String windowKey;
     protected int minHeight, minWidth;
 
-    protected MyWindow(String title, String windowKey) {
+    protected Window(String title, String windowKey) {
         super(title, true, true, true, true);
         this.windowKey = windowKey;
     }

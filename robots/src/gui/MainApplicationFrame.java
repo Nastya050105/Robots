@@ -98,8 +98,8 @@ public class MainApplicationFrame extends JFrame {
         );
         if (result == JOptionPane.YES_OPTION) {
             for (JInternalFrame frame : desktopPane.getAllFrames()) {
-                if (frame instanceof Savable) {
-                    windowManager.saveWindowState((MyWindow) frame);
+                if (frame instanceof ISaveble) {
+                    windowManager.saveWindowState((Window) frame);
                 }
             }
             windowManager.saveToDisk();
