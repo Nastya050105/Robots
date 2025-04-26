@@ -1,5 +1,7 @@
 package log;
 
+import robots.src.log.LogWindowSource;
+
 public final class Logger
 {
     private static final LogWindowSource defaultLogSource;

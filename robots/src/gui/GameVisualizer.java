@@ -1,4 +1,4 @@
-package gui;
+package robots.src.gui;
 
 import java.awt.Color;
 import java.awt.EventQueue;

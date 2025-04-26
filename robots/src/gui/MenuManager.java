@@ -1,6 +1,8 @@
-package gui;
+package robots.src.gui;
 
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 import javax.swing.*;
 
 import log.Logger;
@@ -17,6 +19,7 @@ public class MenuManager {
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(createLookAndFeelMenu());
         menuBar.add(createTestMenu());
+        menuBar.add(createExitMenuItem()); // Добавление пункта меню "Выход"
         return menuBar;
     }
 
@@ -52,6 +55,16 @@ public class MenuManager {
         testMenu.add(addLogMessageItem);
 
         return testMenu;
+    }
+
+    private JMenuItem createExitMenuItem() {
+        JMenuItem exitItem = new JMenuItem("Выход", KeyEvent.VK_X | KeyEvent.VK_ALT);
+        exitItem.addActionListener((event) -> {
+            // Генерация события закрытия окна
+            Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
+                    new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
+        });
+        return exitItem;
     }
 
     private void setLookAndFeel(String className) {
