@@ -1,18 +1,15 @@
 package robots.src.gui;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import javax.swing.*;
-
 import log.Logger;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.Arrays;
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
+    private final RobotModel robotModel = new RobotModel();
     private final MenuManager menuManager;
 
     public MainApplicationFrame() {
@@ -22,39 +19,53 @@ public class MainApplicationFrame extends JFrame {
         setBounds(inset, inset, screenSize.width - inset * 2, screenSize.height - inset * 2);
         setContentPane(desktopPane);
 
-        LogWindow logWindow = createLogWindow();
-        addWindow(logWindow);
-
-        gui.GameWindow gameWindow = new gui.GameWindow();
-        gameWindow.setSize(400, 400);
-        addWindow(gameWindow);
-
         menuManager = new MenuManager(this);
         setJMenuBar(menuManager.createMenuBar());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        //чтобы окно не закрылось автоматически
+        // Создаем окна
+        LogWindow logWindow = createLogWindow();
+        GameWindow gameWindow = createGameWindow();
+        RobotCoordinatesWindow coordsWindow = createCoordinatesWindow();
+
+        // Добавляем окна
+        addWindow(logWindow);
+        addWindow(gameWindow);
+        addWindow(coordsWindow);
+
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-
-        //слушатель для обработки события закрытия окна
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 confirmExit();
             }
         });
-        // Восстановление состояния окон при запуске
-        WindowStateManager.restoreState(new Savable[]{logWindow, gameWindow});
+
+        // Восстанавливаем состояние окон
+        WindowStateManager.restoreState(new Savable[]{
+                logWindow,
+                gameWindow,
+                coordsWindow
+        });
     }
 
     protected LogWindow createLogWindow() {
         LogWindow logWindow = new LogWindow();
-        logWindow.setLocation(10, 10);
         logWindow.setSize(300, 800);
-        setMinimumSize(logWindow.getSize());
-        logWindow.pack();
+        logWindow.setLocation(10, 10);
         Logger.debug("Протокол работает");
         return logWindow;
+    }
+
+    protected GameWindow createGameWindow() {
+        GameWindow gameWindow = new GameWindow(robotModel);
+        gameWindow.setSize(400, 400);
+        return gameWindow;
+    }
+
+    protected RobotCoordinatesWindow createCoordinatesWindow() {
+        RobotCoordinatesWindow coordinatesWindow = new RobotCoordinatesWindow(robotModel);
+        coordinatesWindow.setSize(200, 100);
+        return coordinatesWindow;
     }
 
     protected void addWindow(JInternalFrame frame) {
@@ -62,23 +73,28 @@ public class MainApplicationFrame extends JFrame {
         frame.setVisible(true);
     }
 
-    //подтверждение выхода
-    private void confirmExit() {
-        int result = JOptionPane.showConfirmDialog(this, "Вы уверены, что хотите выйти?", "Подтверждение выхода", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-        if (result == JOptionPane.YES_OPTION) {
-            // Сохранение состояния окон перед выходом
-            try {
-                if (desktopPane.getComponentCount() >= 2) {
-                    WindowStateManager.saveState(new Savable[]{
-                            (Savable) desktopPane.getComponent(0), // LogWindow
-                            (Savable) desktopPane.getComponent(1)  // GameWindow
-                    });
-                }
-                // Закрываем окно
-                System.exit(0);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+    public void confirmExit() {
+        String[] options = {"Да", "Нет"};
+        int result = JOptionPane.showOptionDialog(this,
+                "Вы уверены, что хотите выйти?",
+                "Подтверждение выхода",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[1]);
+
+        if (result == 0) {
+            saveWindowStates();
+            System.exit(0);
         }
+    }
+
+    private void saveWindowStates() {
+        JInternalFrame[] frames = desktopPane.getAllFrames();
+        Savable[] savableFrames = Arrays.stream(frames)
+                .filter(f -> f instanceof Savable)
+                .toArray(Savable[]::new);
+        WindowStateManager.saveState(savableFrames);
     }
 }

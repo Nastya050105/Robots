@@ -29,10 +29,12 @@ public class WindowStateManager {
     public static void restoreState(Savable[] windows) {
         try {
             Map<String, String> state = new HashMap<>();
-            for (String line : Files.readAllLines(Paths.get(CONFIG_FILE))) {
-                String[] parts = line.split("=");
-                if (parts.length == 2) {
-                    state.put(parts[0], parts[1]);
+            if (Files.exists(Paths.get(CONFIG_FILE))) {
+                for (String line : Files.readAllLines(Paths.get(CONFIG_FILE))) {
+                    String[] parts = line.split("=");
+                    if (parts.length == 2) {
+                        state.put(parts[0], parts[1]);
+                    }
                 }
             }
             for (Savable window : windows) {

@@ -7,6 +7,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import log.LogChangeListener;
 import log.LogEntry;
+import log.Logger;
 import robots.src.log.LogWindowSource;
 
 import java.beans.PropertyVetoException;
@@ -38,7 +39,10 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Sava
 
     private void updateLogContent() {
         StringBuilder content = new StringBuilder();
-        for (m_logSource.all(); ;) content.append(entry.getMessage()).append("\n");
+        for (LogEntry entry : m_logSource.all()) {
+            content.append(entry.getMessage()).append("\n");
+        }
+        m_logContent.setText(content.toString());
     }
 
     @Override
@@ -48,28 +52,25 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Sava
 
     @Override
     public void saveState(Map<String, String> state) {
-        PrefixedStateMap logState = new PrefixedStateMap(state, "log.");
-        state.put("log.width", String.valueOf(getWidth()));
-        state.put("log.height", String.valueOf(getHeight()));
-        state.put("log.x", String.valueOf(getX()));
-        state.put("log.y", String.valueOf(getY()));
-        state.put("log.isMaximized", String.valueOf(isMaximum()));
+        state.put("log.x", Integer.toString(getX()));
+        state.put("log.y", Integer.toString(getY()));
+        state.put("log.width", Integer.toString(getWidth()));
+        state.put("log.height", Integer.toString(getHeight()));
+        state.put("log.isMaximized", Boolean.toString(isMaximum()));
     }
 
     @Override
     public void restoreState(Map<String, String> state) {
-        PrefixedStateMap logState = new PrefixedStateMap(state, "log.");
-        if (!logState.isEmpty()) {
-            setBounds(
-                    Integer.parseInt(logState.getOrDefault("x", "10")),
-                    Integer.parseInt(logState.getOrDefault("y", "10")),
-                    Integer.parseInt(logState.getOrDefault("width", "300")),
-                    Integer.parseInt(logState.getOrDefault("height", "800"))
-            );
-            try {
-                setMaximum(Boolean.parseBoolean(logState.get("isMaximized")));
-            } catch (Exception ignored) {
-            }
+        int x = Integer.parseInt(state.getOrDefault("log.x", "10"));
+        int y = Integer.parseInt(state.getOrDefault("log.y", "10"));
+        int width = Integer.parseInt(state.getOrDefault("log.width", "300"));
+        int height = Integer.parseInt(state.getOrDefault("log.height", "800"));
+        setBounds(x, y, width, height);
+
+        try {
+            setMaximum(Boolean.parseBoolean(state.getOrDefault("log.isMaximized", "false")));
+        } catch (Exception e) {
+            Logger.error("Ошибка восстановления состояния окна: " + e.getMessage());
         }
     }
 }

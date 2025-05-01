@@ -15,12 +15,12 @@ public final class Logger
 
     public static void debug(String strMessage)
     {
-        defaultLogSource.append(LogLevel.Debug, strMessage);
+        defaultLogSource.append(log.LogLevel.Debug, strMessage);
     }
     
     public static void error(String strMessage)
     {
-        defaultLogSource.append(LogLevel.Error, strMessage);
+        defaultLogSource.append(log.LogLevel.Error, strMessage);
     }
 
     public static LogWindowSource getDefaultLogSource()
