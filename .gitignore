@@ -1,4 +1,29 @@
-/.metadata
-/robots/.settings
-/robots/bin
-eclipse.bat
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# Build output
+/out/
+target/
+bin/
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Personal/test files
+my.txt
+/net/

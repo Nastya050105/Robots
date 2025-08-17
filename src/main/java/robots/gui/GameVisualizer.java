@@ -1,4 +1,6 @@
-package gui;
+package robots.gui;
+import robots.log.Logger;
+import robots.log.RobotModel;
 
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -11,18 +13,11 @@ import java.awt.geom.AffineTransform;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public class GameVisualizer extends JPanel
 {
-    private final Timer m_timer = initTimer();
-    
-    private static Timer initTimer() 
-    {
-        Timer timer = new Timer("events generator", true);
-        return timer;
-    }
-    
+
     private volatile double m_robotPositionX = 100;
     private volatile double m_robotPositionY = 100; 
     private volatile double m_robotDirection = 0; 
@@ -31,26 +26,19 @@ public class GameVisualizer extends JPanel
     private volatile int m_targetPositionY = 100;
     
     private static final double maxVelocity = 0.1; 
-    private static final double maxAngularVelocity = 0.001; 
+    private static final double maxAngularVelocity = 0.01;
     
     public GameVisualizer() 
     {
-        m_timer.schedule(new TimerTask()
-        {
+        Timer m_timer = new Timer("events generator", true);
+        m_timer.schedule(new TimerTask() {
             @Override
-            public void run()
-            {
-                onRedrawEvent();
+            public void run() {
+                onModelUpdateEvent(); // сначала обновляем модель
+                onRedrawEvent();      // потом вызываем repaint
             }
-        }, 0, 50);
-        m_timer.schedule(new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                onModelUpdateEvent();
-            }
-        }, 0, 10);
+        }, 0, 5); // например, 50 кадров в секунду
+
         addMouseListener(new MouseAdapter()
         {
             @Override
@@ -61,12 +49,14 @@ public class GameVisualizer extends JPanel
             }
         });
         setDoubleBuffered(true);
+
     }
 
     protected void setTargetPosition(Point p)
     {
         m_targetPositionX = p.x;
         m_targetPositionY = p.y;
+        EventQueue.invokeLater(this::repaint);
     }
     
     protected void onRedrawEvent()
@@ -100,18 +90,22 @@ public class GameVisualizer extends JPanel
         double velocity = maxVelocity;
         double angleToTarget = angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
         double angularVelocity = 0;
-        if (angleToTarget > m_robotDirection)
-        {
-            angularVelocity = maxAngularVelocity;
-        }
-        if (angleToTarget < m_robotDirection)
-        {
-            angularVelocity = -maxAngularVelocity;
-        }
+        double angleDiff = normalizeAngle(angleToTarget - m_robotDirection);
+        angularVelocity = angleDiff > 0 ? maxAngularVelocity : -maxAngularVelocity;
+
         
         moveRobot(velocity, angularVelocity, 10);
+
+        RobotModel.getRobotPositionModel().setPosition(m_robotPositionX, m_robotPositionY);
     }
-    
+
+    private static double normalizeAngle(double angle) {
+        while (angle < -Math.PI) angle += 2 * Math.PI;
+        while (angle > Math.PI) angle -= 2 * Math.PI;
+        return angle;
+    }
+
+
     private static double applyLimits(double value, double min, double max)
     {
         if (value < min)
@@ -197,14 +191,15 @@ public class GameVisualizer extends JPanel
         g.setColor(Color.BLACK);
         drawOval(g, robotCenterX  + 10, robotCenterY, 5, 5);
     }
-    
-    private void drawTarget(Graphics2D g, int x, int y)
-    {
-        AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0); 
-        g.setTransform(t);
+
+    private void drawTarget(Graphics2D g, int x, int y) {
+        AffineTransform oldTransform = g.getTransform(); // сохранение
+        g.setTransform(new AffineTransform()); // сброс
         g.setColor(Color.GREEN);
         fillOval(g, x, y, 5, 5);
         g.setColor(Color.BLACK);
         drawOval(g, x, y, 5, 5);
+        g.setTransform(oldTransform); // восстановление
     }
+
 }
