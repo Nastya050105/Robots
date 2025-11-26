@@ -1,11 +1,13 @@
 package gui;
 
+import gui.utils.OnExitPopup;
 import log.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class MainApplicationFrame extends JFrame {
@@ -31,7 +33,14 @@ public class MainApplicationFrame extends JFrame {
         addWindow(gameWindow);
 
         setJMenuBar(generateMenuBar());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                OnExitPopup.show(MainApplicationFrame.this);
+            }
+        });
     }
 
     protected LogWindow createLogWindow() {
