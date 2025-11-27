@@ -59,22 +59,41 @@ public class WindowsStateManager {
             String key = f.getClass().getSimpleName();
 
             try {
-                int x = Integer.parseInt(props.getProperty(key + ".x"));
-                int y = Integer.parseInt(props.getProperty(key + ".y"));
-                int w = Integer.parseInt(props.getProperty(key + ".w"));
-                int h = Integer.parseInt(props.getProperty(key + ".h"));
+                int x = parseIntProperty(props, key + ".x", f.getX());
+                int y = parseIntProperty(props, key + ".y", f.getY());
+                int w = parseIntProperty(props, key + ".w", f.getWidth());
+                int h = parseIntProperty(props, key + ".h", f.getHeight());
 
                 f.setBounds(x, y, w, h);
 
-                boolean icon = Boolean.parseBoolean(props.getProperty(key + ".icon"));
-                boolean max = Boolean.parseBoolean(props.getProperty(key + ".max"));
+                boolean icon = parseBoolProperty(props, key + ".icon");
+                boolean max = parseBoolProperty(props, key + ".max");
 
                 if (icon) f.setIcon(true);
                 if (max) f.setMaximum(true);
 
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                e.printStackTrace();
                 // На случай отсутствия данных или ошибок
             }
         }
+    }
+
+    private static int parseIntProperty(Properties props, String prop, int fallback) {
+        String value = props.getProperty(prop);
+        if (value == null || value.isBlank()) {
+            return fallback;
+        }
+
+        return Integer.parseInt(value);
+    }
+
+    private static boolean parseBoolProperty(Properties props, String prop) {
+        String value = props.getProperty(prop);
+        if (value == null || value.isBlank()) {
+            return false;
+        }
+
+        return Boolean.parseBoolean(value);
     }
 }
