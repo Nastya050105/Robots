@@ -1,3 +1,5 @@
+package windows;
+
 import log.LogChangeListener;
 import log.LogLevel;
 import log.LogWindowSource;
@@ -6,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class LogWindowSourceTest {
+class LogWindowSourceTests {
     private LogWindowSource logWindowSource;
 
     @BeforeEach

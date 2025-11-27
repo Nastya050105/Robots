@@ -1,9 +1,11 @@
+package models;
+
 import gui.models.Robot;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class RobotModelMovementTest {
+class RobotTests {
     @Test
     public void testRobotMovesTowardTarget() {
         Robot model = new Robot();
