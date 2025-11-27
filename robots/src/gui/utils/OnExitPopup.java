@@ -13,7 +13,7 @@ public class OnExitPopup {
     private OnExitPopup() {
     }
 
-    public static void show(JFrame parentComponent) {
+    public static void show(JFrame parentComponent, Runnable onExit) {
         int result = JOptionPane.showConfirmDialog(
                 parentComponent,
                 "Вы действительно хотите выйти?",
@@ -23,6 +23,8 @@ public class OnExitPopup {
         );
 
         if (result == JOptionPane.YES_OPTION) {
+            onExit.run();
+
             parentComponent.dispose();
             System.exit(0);
         }
