@@ -1,7 +1,11 @@
 package gui;
 
+import gui.models.Robot;
 import gui.utils.OnExitPopup;
 import gui.utils.WindowsStateManager;
+import gui.windows.GameWindow;
+import gui.windows.LogWindow;
+import gui.windows.RobotInfoWindow;
 import log.Logger;
 
 import javax.swing.*;
@@ -28,7 +32,13 @@ public class MainApplicationFrame extends JFrame {
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-        GameWindow gameWindow = new GameWindow();
+        Robot robot = new Robot();
+
+        RobotInfoWindow robotInfoWindow = new RobotInfoWindow(robot);
+        robotInfoWindow.setSize(400, 400);
+        addWindow(robotInfoWindow);
+
+        GameWindow gameWindow = new GameWindow(robot);
         gameWindow.setSize(400, 400);
         addWindow(gameWindow);
 
