@@ -1,6 +1,6 @@
-package utils;
+package gui.perstistence;
 
-import gui.utils.WindowsStateManager;
+import gui.persistence.WindowsStateManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

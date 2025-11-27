@@ -1,8 +1,5 @@
-package windows;
+package log;
 
-import log.LogChangeListener;
-import log.LogLevel;
-import log.LogWindowSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

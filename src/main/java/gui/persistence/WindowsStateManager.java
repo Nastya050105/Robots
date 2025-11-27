@@ -1,4 +1,4 @@
-package gui.utils;
+package gui.persistence;
 
 import javax.swing.*;
 import java.awt.*;
