@@ -8,4 +8,4 @@ eclipse.bat
 out/
 target/
 
-*.properties
+windows.properties

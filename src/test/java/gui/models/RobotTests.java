@@ -1,4 +1,4 @@
-package models;
+package gui.models;
 
 import gui.models.Robot;
 import org.junit.jupiter.api.Test;

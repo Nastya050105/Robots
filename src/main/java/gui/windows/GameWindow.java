@@ -2,6 +2,8 @@ package gui.windows;
 
 import gui.GameVisualizer;
 import gui.models.Robot;
+import gui.utils.Localizable;
+import gui.utils.Localization;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,11 +12,11 @@ import java.awt.event.MouseEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class GameWindow extends JInternalFrame {
+public class GameWindow extends JInternalFrame implements Localizable {
     private final GameVisualizer visualizer;
 
     public GameWindow(Robot robot) {
-        super("Игровое поле", true, true, true, true);
+        super(Localization.getValue("game.title"), true, true, true, true);
 
         visualizer = new GameVisualizer(robot);
 
@@ -38,5 +40,10 @@ public class GameWindow extends JInternalFrame {
                 robot.setTarget(e.getPoint().getX(), e.getPoint().getY());
             }
         });
+    }
+
+    @Override
+    public void updateLocalization() {
+        setTitle(Localization.getValue("game.title"));
     }
 }
