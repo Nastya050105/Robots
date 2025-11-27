@@ -1,6 +1,7 @@
 package gui;
 
 import gui.utils.OnExitPopup;
+import gui.utils.WindowsStateManager;
 import log.Logger;
 
 import javax.swing.*;
@@ -13,17 +14,16 @@ import java.awt.event.WindowEvent;
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
 
+    private final WindowsStateManager windowsStateManager = new WindowsStateManager(".");
+
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(inset, inset,
-                screenSize.width - inset * 2,
-                screenSize.height - inset * 2);
+        setBounds(inset, inset, screenSize.width - inset * 2, screenSize.height - inset * 2);
 
         setContentPane(desktopPane);
-
 
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
@@ -34,11 +34,13 @@ public class MainApplicationFrame extends JFrame {
 
         setJMenuBar(generateMenuBar());
 
+        windowsStateManager.load(desktopPane);
+
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                OnExitPopup.show(MainApplicationFrame.this);
+                OnExitPopup.show(MainApplicationFrame.this, () -> windowsStateManager.save(desktopPane));
             }
         });
     }
