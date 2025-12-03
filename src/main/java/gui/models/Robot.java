@@ -7,15 +7,15 @@ public class Robot extends Observable {
     private static final double MAX_ANGULAR_VELOCITY = 0.001;
     private static final double ROBOT_PADDING = 10;
 
-    private double x = 100;
-    private double y = 100;
-    private double direction = 0;
+    private volatile double x = 100;
+    private volatile double y = 100;
+    private volatile double direction = 0;
 
-    private double targetX = 150;
-    private double targetY = 100;
+    private volatile double targetX = 150;
+    private volatile double targetY = 100;
 
-    private double windowWidth = 800;
-    private double windowHeight = 600;
+    private volatile double windowWidth = 800;
+    private volatile double windowHeight = 600;
 
     public synchronized double getX() {
         return x;
