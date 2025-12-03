@@ -16,22 +16,6 @@ public class GameVisualizer extends JPanel {
     public GameVisualizer(Robot robot) {
         this.robot = robot;
         setDoubleBuffered(true);
-
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                double w = getWidth();
-                double h = getHeight();
-                robot.setBoundaries(w, h);
-            }
-        });
-
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                robot.setTarget(e.getPoint().getX(), e.getPoint().getY());
-            }
-        });
     }
 
     @Override
