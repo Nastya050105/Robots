@@ -15,7 +15,6 @@ public class GameVisualizer extends JPanel {
 
     public GameVisualizer(Robot robot) {
         this.robot = robot;
-        setDoubleBuffered(true);
     }
 
     @Override

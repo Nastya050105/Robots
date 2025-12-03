@@ -39,7 +39,7 @@ public class GameWindowController extends JInternalFrame implements Localizable,
 
         visualizer.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
                 robot.setTarget(e.getPoint().getX(), e.getPoint().getY());
             }
         });
