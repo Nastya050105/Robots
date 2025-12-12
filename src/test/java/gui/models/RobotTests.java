@@ -1,6 +1,5 @@
 package gui.models;
 
-import gui.models.Robot;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

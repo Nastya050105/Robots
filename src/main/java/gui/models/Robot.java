@@ -5,13 +5,17 @@ import java.util.Observable;
 public class Robot extends Observable {
     private static final double MAX_VELOCITY = 0.1;
     private static final double MAX_ANGULAR_VELOCITY = 0.001;
+    private static final double ROBOT_PADDING = 10;
 
-    private double x = 100;
-    private double y = 100;
-    private double direction = 0;
+    private volatile double x = 100;
+    private volatile double y = 100;
+    private volatile double direction = 0;
 
-    private double targetX = 150;
-    private double targetY = 100;
+    private volatile double targetX = 150;
+    private volatile double targetY = 100;
+
+    private volatile double windowWidth = 800;
+    private volatile double windowHeight = 600;
 
     public synchronized double getX() {
         return x;
@@ -28,6 +32,19 @@ public class Robot extends Observable {
     public synchronized void setTarget(double tx, double ty) {
         targetX = tx;
         targetY = ty;
+    }
+
+    public synchronized double getTargetX() {
+        return targetX;
+    }
+
+    public synchronized double getTargetY() {
+        return targetY;
+    }
+
+    public synchronized void setBoundaries(double width, double height) {
+        windowWidth = width;
+        windowHeight = height;
     }
 
     public synchronized void update(double dt) {
@@ -60,6 +77,9 @@ public class Robot extends Observable {
         if (!Double.isFinite(newY)) {
             newY = y + velocity * duration * Math.sin(direction);
         }
+
+        newX = Math.max(ROBOT_PADDING, Math.min(windowWidth - ROBOT_PADDING, newX));
+        newY = Math.max(ROBOT_PADDING, Math.min(windowHeight - ROBOT_PADDING, newY));
 
         x = newX;
         y = newY;

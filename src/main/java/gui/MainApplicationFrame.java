@@ -5,7 +5,7 @@ import gui.persistence.WindowsStateManager;
 import gui.utils.Localizable;
 import gui.utils.Localization;
 import gui.utils.OnExitPopup;
-import gui.windows.GameWindow;
+import gui.windows.GameWindowController;
 import gui.windows.LogWindow;
 import gui.windows.RobotInfoWindow;
 import log.Logger;
@@ -16,9 +16,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
+import java.util.Timer;
 import java.util.function.Consumer;
 
 public class MainApplicationFrame extends JFrame implements Localizable {
@@ -28,8 +28,6 @@ public class MainApplicationFrame extends JFrame implements Localizable {
     private final List<Localizable> localizables = new ArrayList<>();
 
     public MainApplicationFrame() {
-        //Make the big window be indented 50 pixels from each edge
-        //of the screen.
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset, screenSize.width - inset * 2, screenSize.height - inset * 2);
@@ -40,14 +38,21 @@ public class MainApplicationFrame extends JFrame implements Localizable {
         addWindow(logWindow);
 
         Robot robot = new Robot();
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                robot.update(10);
+            }
+        }, 0, 2);
 
         RobotInfoWindow robotInfoWindow = new RobotInfoWindow(robot);
         robotInfoWindow.setSize(400, 400);
         addWindow(robotInfoWindow);
 
-        GameWindow gameWindow = new GameWindow(robot);
-        gameWindow.setSize(400, 400);
-        addWindow(gameWindow);
+        GameWindowController gameWindowController = new GameWindowController(robot);
+        gameWindowController.setSize(400, 400);
+        addWindow(gameWindowController);
 
         setJMenuBar(generateMenuBar());
 
@@ -64,7 +69,7 @@ public class MainApplicationFrame extends JFrame implements Localizable {
         localizables.add(this);
         localizables.add(logWindow);
         localizables.add(robotInfoWindow);
-        localizables.add(gameWindow);
+        localizables.add(gameWindowController);
     }
 
     protected LogWindow createLogWindow() {
