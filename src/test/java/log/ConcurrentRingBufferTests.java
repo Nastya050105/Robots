@@ -20,20 +20,20 @@ class ConcurrentRingBufferTests {
         assertEquals(2, buffer.size());
 
         buffer.add(3);
-        buffer.add(4); // вытеснит 1
+        buffer.add(4);
         assertEquals(3, buffer.size());
     }
 
     @Test
     void testGetBySequence() {
         ConcurrentRingBuffer<String> buffer = new ConcurrentRingBuffer<>(2);
-        buffer.add("a"); // seq=1
-        buffer.add("b"); // seq=2
+        buffer.add("a");
+        buffer.add("b");
 
         assertEquals("a", buffer.getBySequence(buffer.getSequence() - 2));
         assertEquals("b", buffer.getBySequence(buffer.getSequence() - 1));
 
-        buffer.add("c"); // seq=3, "a" вытеснено
+        buffer.add("c");
 
         assertThrows(IndexOutOfBoundsException.class,
                 () -> buffer.getBySequence(buffer.getSequence() - 3));
@@ -52,7 +52,6 @@ class ConcurrentRingBufferTests {
         List<Integer> range = buffer.getRange(firstSeq, lastSeq);
         assertEquals(List.of(0, 1, 2, 3, 4), range);
 
-        // часть диапазона выходит за границы
         List<Integer> partial = buffer.getRange(firstSeq - 10, firstSeq + 1);
         assertEquals(List.of(0, 1), partial);
     }
@@ -63,17 +62,15 @@ class ConcurrentRingBufferTests {
         ConcurrentRingBuffer<Integer> buffer = new ConcurrentRingBuffer<>(capacity);
         ExecutorService executor = Executors.newFixedThreadPool(4);
 
-        // Writer task
         Callable<Void> writer = () -> {
             for (int i = 0; i < 1000; i++) buffer.add(i);
             return null;
         };
 
-        // Reader task
         Callable<Boolean> reader = () -> {
             for (int i = 0; i < 1000; i++) {
                 Iterable<Integer> snap = buffer.snapshot();
-                snap.iterator().hasNext(); // просто проверить итератор
+                snap.iterator().hasNext();
             }
             return true;
         };
@@ -91,7 +88,6 @@ class ConcurrentRingBufferTests {
         executor.shutdown();
         executor.awaitTermination(1, TimeUnit.SECONDS);
 
-        // Размер буфера не превышает capacity
         assertTrue(buffer.size() <= capacity);
     }
 }
