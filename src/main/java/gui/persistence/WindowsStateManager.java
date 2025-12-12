@@ -74,7 +74,6 @@ public class WindowsStateManager {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                // На случай отсутствия данных или ошибок
             }
         }
     }
